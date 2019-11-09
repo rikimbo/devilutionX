@@ -1775,7 +1775,8 @@ StartPlayerKill(int pnum, int earflag)
 		NetSendCmdParam1(TRUE, CMD_PLRDEAD, earflag);
 	}
 
-	diablolevel = gbMaxPlayers > 1 && plr[pnum].plrlevel == 16;
+	// diablolevel = gbMaxPlayers > 1 && plr[pnum].plrlevel == 16;
+	diablolevel = TRUE;
 
 	if ((DWORD)pnum >= MAX_PLRS) {
 		app_fatal("StartPlayerKill: illegal player %d", pnum);
