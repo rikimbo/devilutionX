@@ -875,6 +875,10 @@ BOOL Plr2PlrMHit(int pnum, int p, int mindam, int maxdam, int dist, int mtype, B
 		return FALSE;
 	}
 
+        if (pnum == myplr && FriendlyMode) {
+                return FALSE;
+        }
+
 	if (plr[p]._pSpellFlags & 1 && missiledata[mtype].mType == 0) {
 		return FALSE;
 	}
