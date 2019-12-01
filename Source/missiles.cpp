@@ -875,7 +875,9 @@ BOOL Plr2PlrMHit(int pnum, int p, int mindam, int maxdam, int dist, int mtype, B
 		return FALSE;
 	}
 
-        if (pnum == myplr && FriendlyMode) {
+        if (FriendlyMode) {
+                // pnum == myplr: If I'm the author of the missile, don't generate damage.
+                // pnum != myplr: If I'm the target, don't render the damage
                 return FALSE;
         }
 
