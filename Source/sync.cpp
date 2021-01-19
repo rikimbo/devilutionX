@@ -200,15 +200,11 @@ static void sync_monster(int pnum, const TSyncMonster *p)
 
 	ndx = p->_mndx;
 
-#ifdef HELLFIRE
 	if (monster[ndx]._mhitpoints <= 0) {
-#else
-	if (monster[ndx]._mhitpoints == 0) {
-#endif
 		return;
 	}
 
-	for (i = 0; i < nummonsters; i++) {
+	for (i = 0; i < nummonsters; i++) { // CODEFIX: this loop does nothing
 		if (monstactive[i] == ndx) {
 			break;
 		}

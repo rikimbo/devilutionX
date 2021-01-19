@@ -12,6 +12,7 @@ DEVILUTION_BEGIN_NAMESPACE
 extern "C" {
 #endif
 
+extern bool allquests;
 extern BOOL questlog;
 extern BYTE *pQLogCel;
 extern QuestStruct quests[MAXQUESTS];
@@ -39,7 +40,7 @@ void QuestlogESC();
 void SetMultiQuest(int q, int s, int l, int v1);
 
 /* rdata */
-extern QuestData questlist[MAXQUESTS];
+extern QuestData questlist[];
 
 #ifdef __cplusplus
 }

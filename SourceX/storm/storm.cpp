@@ -34,9 +34,10 @@ std::string *SBasePath = NULL;
 static bool IsSVidVideoMode = false;
 #endif
 
-radon::File& getIni() {
-  static radon::File ini(GetPrefPath() + "diablo.ini");
-  return ini;
+radon::File &getIni()
+{
+	static radon::File ini(GetConfigPath() + "diablo.ini");
+	return ini;
 }
 
 static Mix_Chunk *SFileChunk = NULL;
@@ -152,36 +153,42 @@ BOOL SFileOpenFile(const char *filename, HANDLE *phFile)
 		result = SFileOpenFileEx((HANDLE)0, path.c_str(), 0xFFFFFFFF, phFile);
 	}
 
-#ifdef HELLFIRE
 	if (!result) {
-		result = SFileOpenFileEx((HANDLE)hfopt2_mpq, filename, 0, phFile);
+		result = SFileOpenFileEx((HANDLE)devilutionx_mpq, filename, 0, phFile);
 	}
-	if (!result) {
-		result = SFileOpenFileEx((HANDLE)hfopt1_mpq, filename, 0, phFile);
+	if (gbIsHellfire) {
+		if (!result) {
+			result = SFileOpenFileEx((HANDLE)hfopt2_mpq, filename, 0, phFile);
+		}
+		if (!result) {
+			result = SFileOpenFileEx((HANDLE)hfopt1_mpq, filename, 0, phFile);
+		}
+		if (!result) {
+			result = SFileOpenFileEx((HANDLE)hfvoice_mpq, filename, 0, phFile);
+		}
+		if (!result) {
+			result = SFileOpenFileEx((HANDLE)hfmusic_mpq, filename, 0, phFile);
+		}
+		if (!result) {
+			result = SFileOpenFileEx((HANDLE)hfbarb_mpq, filename, 0, phFile);
+		}
+		if (!result) {
+			result = SFileOpenFileEx((HANDLE)hfbard_mpq, filename, 0, phFile);
+		}
+		if (!result) {
+			result = SFileOpenFileEx((HANDLE)hfmonk_mpq, filename, 0, phFile);
+		}
+		if (!result) {
+			result = SFileOpenFileEx((HANDLE)hellfire_mpq, filename, 0, phFile);
+		}
 	}
-	if (!result) {
-		result = SFileOpenFileEx((HANDLE)hfvoice_mpq, filename, 0, phFile);
-	}
-	if (!result) {
-		result = SFileOpenFileEx((HANDLE)hfmusic_mpq, filename, 0, phFile);
-	}
-	if (!result) {
-		result = SFileOpenFileEx((HANDLE)hfbarb_mpq, filename, 0, phFile);
-	}
-	if (!result) {
-		result = SFileOpenFileEx((HANDLE)hfbard_mpq, filename, 0, phFile);
-	}
-	if (!result) {
-		result = SFileOpenFileEx((HANDLE)hfmonk_mpq, filename, 0, phFile);
-	}
-	if (!result) {
-		result = SFileOpenFileEx((HANDLE)hellfire_mpq, filename, 0, phFile);
-	}
-#endif
 	if (!result && patch_rt_mpq) {
 		result = SFileOpenFileEx((HANDLE)patch_rt_mpq, filename, 0, phFile);
 	}
-	if (!result) {
+	if (!result && spawn_mpq) {
+		result = SFileOpenFileEx((HANDLE)spawn_mpq, filename, 0, phFile);
+	}
+	if (!result && diabdat_mpq) {
 		result = SFileOpenFileEx((HANDLE)diabdat_mpq, filename, 0, phFile);
 	}
 
@@ -355,7 +362,7 @@ bool getIniValue(const char *sectionName, const char *keyName, char *string, int
 
 void setIniValue(const char *sectionName, const char *keyName, char *value, int len)
 {
-	radon::File& ini = getIni();
+	radon::File &ini = getIni();
 
 	radon::Section *section = ini.getSection(sectionName);
 	if (!section) {
@@ -604,15 +611,15 @@ void SVidPlayBegin(const char *filename, int a2, int a3, int a4, int a5, int fla
 			SDL_Rect **modes = SDL_ListModes(NULL, display->flags);
 
 			/* Check is there are any modes available */
-			if(modes == (SDL_Rect **)0){
+			if (modes == (SDL_Rect **)0) {
 				IsSVidVideoMode = false;
 			}
 
 			/* Check if our resolution is restricted */
-			if(modes != (SDL_Rect **)-1){
+			if (modes != (SDL_Rect **)-1) {
 				// Search for a usable video mode
 				bool UsableModeFound = false;
-				for (int i=0; modes[i]; i++) {
+				for (int i = 0; modes[i]; i++) {
 					if (modes[i]->w == SVidWidth || modes[i]->h == SVidHeight) {
 						UsableModeFound = true;
 						break;
@@ -713,7 +720,7 @@ BOOL SVidPlayContinue(void)
 			return false;
 		}
 #else
-	sVidAudioQueue->Enqueue(smk_get_audio(SVidSMK, 0), smk_get_audio_size(SVidSMK, 0));
+		sVidAudioQueue->Enqueue(smk_get_audio(SVidSMK, 0), smk_get_audio_size(SVidSMK, 0));
 #endif
 	}
 
@@ -771,7 +778,7 @@ BOOL SVidPlayContinue(void)
 
 	double now = SDL_GetTicks() * 1000;
 	if (now < SVidFrameEnd) {
-		SDL_Delay((SVidFrameEnd - now) / 1000); // wait with next frame if the system is to fast
+		SDL_Delay((SVidFrameEnd - now) / 1000); // wait with next frame if the system is too fast
 	}
 
 	return SVidLoadNextFrame();
@@ -821,7 +828,8 @@ void SVidPlayEnd(HANDLE video)
 		}
 	}
 #else
-	if (IsSVidVideoMode) SetVideoModeToPrimary(IsFullScreen(), screenWidth, screenHeight);
+	if (IsSVidVideoMode)
+		SetVideoModeToPrimary(IsFullScreen(), screenWidth, screenHeight);
 #endif
 }
 
@@ -843,7 +851,8 @@ int SStrCopy(char *dest, const char *src, int max_length)
 
 BOOL SFileSetBasePath(const char *path)
 {
-	if (SBasePath == NULL) SBasePath = new std::string;
+	if (SBasePath == NULL)
+		SBasePath = new std::string;
 	*SBasePath = path;
 	return true;
 }
@@ -853,4 +862,4 @@ BOOL SFileEnableDirectAccess(BOOL enable)
 	directFileAccess = enable;
 	return true;
 }
-}
+} // namespace dvl

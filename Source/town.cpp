@@ -79,7 +79,8 @@ void T_FillTile(BYTE *P3Tiles, int xx, int yy, int t)
 	dPiece[xx + 1][yy + 1] = v4;
 }
 
-void town_4751C6(){
+void town_4751C6()
+{
 	dPiece[78][60] = 0x48a;
 	dPiece[79][60] = 0x48b;
 	dPiece[78][61] = 0x48c;
@@ -129,7 +130,8 @@ void town_4751C6(){
 	SetDungeonMicros();
 }
 
-void town_475379(){
+void town_475379()
+{
 	dPiece[78][60] = 0x48a;
 	dPiece[79][60] = 0x4eb;
 	dPiece[78][61] = 0x4ec;
@@ -179,7 +181,8 @@ void town_475379(){
 	SetDungeonMicros();
 }
 
-void town_47552C(){
+void town_47552C()
+{
 	dPiece[36][21] = 0x52b;
 	dPiece[37][21] = 0x52c;
 	dPiece[36][22] = 0x52d;
@@ -193,7 +196,8 @@ void town_47552C(){
 	SetDungeonMicros();
 }
 
-void town_475595(){
+void town_475595()
+{
 	dPiece[36][21] = 0x533;
 	dPiece[37][21] = 0x534;
 	dPiece[36][22] = 0x535;
@@ -239,66 +243,31 @@ void T_Pass3()
 	mem_free_dbg(pSector);
 
 	if (gbIsSpawn || gbMaxPlayers == 1) {
-#ifdef HELLFIRE
-		if(quests[Q_FARMER]._qactive == 3 || quests[Q_FARMER]._qactive == 10
-		|| quests[Q_JERSEY]._qactive == 3 || quests[Q_JERSEY]._qactive == 10)
-		{
-			town_4751C6();
-		}
-		else
-		{
-			town_475379();
-		}
-		if ( quests[Q_GRAVE]._qactive == 3 || plr[myplr]._pLvlVisited[21] )
-			town_475595();
-		else
-			town_47552C();
-#endif
-#ifdef HELLFIRE
-		if (gbIsSpawn || !(plr[myplr].pTownWarps & 1) && plr[myplr]._pLevel < 10)
-#else
-		if (gbIsSpawn || !(plr[myplr].pTownWarps & 1))
-#endif
-		{
+		if (gbIsSpawn || !(plr[myplr].pTownWarps & 1) && (!gbIsHellfire || plr[myplr]._pLevel < 10)) {
 			T_FillTile(P3Tiles, 48, 20, 320);
 		}
-#ifdef HELLFIRE
-		if (gbIsSpawn || !(plr[myplr].pTownWarps & 2) && plr[myplr]._pLevel < 15)
-#else
-		if (gbIsSpawn || !(plr[myplr].pTownWarps & 2))
-#endif
-		{
+		if (gbIsSpawn || !(plr[myplr].pTownWarps & 2) && (!gbIsHellfire || plr[myplr]._pLevel < 15)) {
 			T_FillTile(P3Tiles, 16, 68, 332);
 			T_FillTile(P3Tiles, 16, 70, 331);
 		}
-#ifdef HELLFIRE
-		if (gbIsSpawn || !(plr[myplr].pTownWarps & 4) && plr[myplr]._pLevel < 20) {
-#else
-		if (gbIsSpawn || !(plr[myplr].pTownWarps & 4)) {
-#endif
+		if (gbIsSpawn || !(plr[myplr].pTownWarps & 4) && (!gbIsHellfire || plr[myplr]._pLevel < 20)) {
 			for (x = 36; x < 46; x++) {
 				T_FillTile(P3Tiles, x, 78, random_(0, 4) + 1);
 			}
 		}
 	}
-#ifdef HELLFIRE
-	else
-	{
-		if(quests[Q_FARMER]._qactive == 3 || quests[Q_FARMER]._qactive == 10
-		|| quests[Q_JERSEY]._qactive == 3 || quests[Q_JERSEY]._qactive == 10)
-		{
+	if (gbIsHellfire) {
+		if (quests[Q_FARMER]._qactive == 3 || quests[Q_FARMER]._qactive == 10
+		    || quests[Q_JERSEY]._qactive == 3 || quests[Q_JERSEY]._qactive == 10) {
 			town_4751C6();
-		}
-		else
-		{
+		} else {
 			town_475379();
 		}
-		if ( quests[Q_GRAVE]._qactive == 3 || plr[myplr]._pLvlVisited[21] )
+		if (quests[Q_GRAVE]._qactive == 3 || plr[myplr]._pLvlVisited[21])
 			town_475595();
 		else
 			town_47552C();
 	}
-#endif
 
 	if (quests[Q_PWATER]._qactive != QUEST_DONE && quests[Q_PWATER]._qactive) {
 		T_FillTile(P3Tiles, 60, 70, 342);
@@ -343,7 +312,6 @@ void CreateTown(int entry)
 			ViewX = 41;
 			ViewY = 81;
 		}
-#ifdef HELLFIRE
 		if (TWarpFrom == 21) {
 			ViewX = 36;
 			ViewY = 25;
@@ -352,7 +320,6 @@ void CreateTown(int entry)
 			ViewX = 79;
 			ViewY = 62;
 		}
-#endif
 	}
 
 	T_Pass3();
