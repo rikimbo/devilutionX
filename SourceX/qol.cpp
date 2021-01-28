@@ -275,7 +275,8 @@ void GenerateLabelOffsets()
 	if (generatedLabels)
 		return;
 	isGeneratingLabels = true;
-	for (int i = 0; i < ITEMTYPES; i++) {
+	int itemTypes = gbIsHellfire ? ITEMTYPES : 35;
+	for (int i = 0; i < itemTypes; i++) {
 		drawMinX = BUFFER_WIDTH;
 		drawMaxX = 0;
 		CelClippedDrawLight(BUFFER_WIDTH / 2 - 16, 351, itemanims[i], ItemAnimLs[i], 96);
