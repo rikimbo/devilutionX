@@ -253,8 +253,7 @@ add_library(devilution STATIC
   Source/town.cpp
   Source/towners.cpp
   Source/track.cpp
-  Source/trigs.cpp
-  Source/wave.cpp)
+  Source/trigs.cpp)
 
 set(devilutionx_SRCS
   SourceX/qol.cpp
@@ -342,6 +341,7 @@ if(RUN_TESTS)
     SourceT/drlg_l4_test.cpp
     SourceT/effects_test.cpp
     SourceT/file_util_test.cpp
+    SourceT/player_test.cpp
     SourceT/scrollrt_test.cpp)
 endif()
 

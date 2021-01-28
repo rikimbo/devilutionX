@@ -413,12 +413,12 @@ void RepeatClicks()
 	case 1: {
 		if ((SDL_GetModState() & KMOD_SHIFT) && currlevel != 0) {
 			if (plr[myplr]._pwtype == WT_RANGED) {
-				NetSendCmdLoc(TRUE, CMD_RATTACKXY, cursmx, cursmy);
+				NetSendCmdLoc(true, CMD_RATTACKXY, cursmx, cursmy);
 			} else {
-				NetSendCmdLoc(TRUE, CMD_SATTACKXY, cursmx, cursmy);
+				NetSendCmdLoc(true, CMD_SATTACKXY, cursmx, cursmy);
 			}
 		} else {
-			NetSendCmdLoc(TRUE, CMD_WALKXY, cursmx, cursmy);
+			NetSendCmdLoc(true, CMD_WALKXY, cursmx, cursmy);
 		}
 		break;
 	}

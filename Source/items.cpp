@@ -1679,7 +1679,7 @@ void GetStaffPower(int i, int lvl, int bs, BOOL onlygood)
 	if (tmp == 0 || onlygood) {
 		nl = 0;
 		for (j = 0; PL_Prefix[j].PLPower != IPL_INVALID; j++) {
-			if (!gbIsHellfire && j >= 83)
+			if (!gbIsHellfire && j > 82)
 				break;
 			if (IsPrefixValidForItemType(j, PLT_STAFF) && PL_Prefix[j].PLMinLvl <= lvl) {
 				addok = TRUE;
@@ -2342,7 +2342,7 @@ void GetItemPower(int i, int minlvl, int maxlvl, int flgs, BOOL onlygood)
 	if (pre == 0) {
 		nt = 0;
 		for (j = 0; PL_Prefix[j].PLPower != IPL_INVALID; j++) {
-			if (!gbIsHellfire && j >= 83)
+			if (!gbIsHellfire && j > 82)
 				break;
 			if (IsPrefixValidForItemType(j, flgs)) {
 				if (PL_Prefix[j].PLMinLvl >= minlvl && PL_Prefix[j].PLMinLvl <= maxlvl && (!onlygood || PL_Prefix[j].PLOk) && (flgs != PLT_STAFF || PL_Prefix[j].PLPower != IPL_CHARGES)) {
@@ -2375,7 +2375,7 @@ void GetItemPower(int i, int minlvl, int maxlvl, int flgs, BOOL onlygood)
 	if (post != 0) {
 		nl = 0;
 		for (j = 0; PL_Suffix[j].PLPower != IPL_INVALID; j++) {
-			if (!gbIsHellfire && j >= 94)
+			if (!gbIsHellfire && j > 94)
 				break;
 			if (IsSuffixValidForItemType(j, flgs)
 			    && PL_Suffix[j].PLMinLvl >= minlvl && PL_Suffix[j].PLMinLvl <= maxlvl
@@ -2808,10 +2808,13 @@ void SpawnItem(int m, int x, int y, BOOL sendmsg)
 		GetSuperItemSpace(x, y, ii);
 		itemavail[0] = itemavail[MAXITEMS - numitems - 1];
 		itemactive[numitems] = ii;
+		int mLevel = monster[m].MData->mLevel;
+		if (!gbIsHellfire && monster[m].MType->mtype == MT_DIABLO)
+			mLevel -= 15;
 		if (monster[m]._uniqtype) {
-			SetupAllItems(ii, idx, GetRndSeed(), monster[m].MData->mLevel, 15, onlygood, FALSE, FALSE);
+			SetupAllItems(ii, idx, GetRndSeed(), mLevel, 15, onlygood, FALSE, FALSE);
 		} else {
-			SetupAllItems(ii, idx, GetRndSeed(), monster[m].MData->mLevel, 1, onlygood, FALSE, FALSE);
+			SetupAllItems(ii, idx, GetRndSeed(), mLevel, 1, onlygood, FALSE, FALSE);
 		}
 		numitems++;
 		if (sendmsg)
@@ -3034,13 +3037,37 @@ void RecreateEar(int ii, WORD ic, int iseed, int Id, int dur, int mdur, int ch, 
 void items_427A72()
 {
 	PkItemStruct id;
+	char hexId[sizeof(PkItemStruct) * 2 + 1];
+	BYTE *buffer;
+
 	if (CornerStone.activated) {
 		if (CornerStone.item.IDidx >= 0) {
 			PackItem(&id, &CornerStone.item);
-			setIniValue("Hellfire", off_4A5AC4, (char *)&id, 19);
+			buffer = (BYTE *)&id;
+			for (int i = 0; i < sizeof(PkItemStruct); i++) {
+				sprintf(&hexId[i * 2], "%02X", buffer[i]);
+			}
+
+			setIniValue("Hellfire", off_4A5AC4, hexId, sizeof(hexId));
 		} else {
-			setIniValue("Hellfire", off_4A5AC4, (char *)"", 1);
+			setIniValue("Hellfire", off_4A5AC4, "", 1);
 		}
+	}
+}
+
+int char2int(char input)
+{
+	if (input >= '0' && input <= '9')
+		return input - '0';
+	if (input >= 'A' && input <= 'F')
+		return input - 'A' + 10;
+	return 0;
+}
+
+void hex2bin(const char *src, int bytes, char *target)
+{
+	for (int i = 0; i < bytes; i++, src += 2) {
+		target[i] = (char2int(*src) << 4) | char2int(src[1]);
 	}
 }
 
@@ -3049,6 +3076,8 @@ void items_427ABA(int x, int y)
 	int i, ii;
 	int dwSize;
 	PkItemStruct PkSItem;
+	char hexPkSItem[sizeof(PkItemStruct) * 2 + 1];
+	BYTE *buffer;
 
 	if (CornerStone.activated || x == 0 || y == 0) {
 		return;
@@ -3067,8 +3096,9 @@ void items_427ABA(int x, int y)
 		dItem[x][y] = 0;
 	}
 	dwSize = 0;
-	if (getIniValue("Hellfire", off_4A5AC4, (char *)&PkSItem, sizeof(PkSItem), &dwSize)) {
-		if (dwSize == sizeof(PkSItem)) {
+	if (getIniValue("Hellfire", off_4A5AC4, hexPkSItem, sizeof(hexPkSItem), &dwSize)) {
+		if (dwSize >= sizeof(PkItemStruct) * 2) {
+			hex2bin(hexPkSItem, sizeof(PkItemStruct), (char *)&PkSItem);
 			ii = itemavail[0];
 			dItem[x][y] = ii + 1;
 			itemavail[0] = itemavail[MAXITEMS - numitems - 1];

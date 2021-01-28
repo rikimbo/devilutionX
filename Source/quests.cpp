@@ -8,7 +8,7 @@
 DEVILUTION_BEGIN_NAMESPACE
 
 int qtopline;
-BOOL questlog;
+bool questlog;
 BYTE *pQLogCel;
 /** Contains the quests of the current game. */
 QuestStruct quests[MAXQUESTS];
@@ -115,7 +115,7 @@ void InitQuests()
 	initiatedQuests = 0;
 
 	for (z = 0; z < MAXQUESTS; z++) {
-		if (!gbIsHellfire && z >= 16)
+		if (!gbIsHellfire && z > 15)
 			break;
 		if (gbMaxPlayers > 1 && !(questlist[z]._qflags & QUEST_ANY))
 			continue;
