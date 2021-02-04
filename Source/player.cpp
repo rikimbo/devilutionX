@@ -2206,6 +2206,7 @@ bool PM_DoWalk(int pnum, int variant)
 			PlaySfxLoc(PS_WALK1, plr[pnum]._px, plr[pnum]._py);
 		}
 	}
+
 	//"Jog" in town which works by doubling movement speed and skipping every other animation frame
 	if (gbIsHellfire && currlevel == 0 && jogging_opt) {
 		if (plr[pnum]._pAnimFrame % 2 == 0) {
