@@ -279,7 +279,7 @@ void GenerateLabelOffsets()
 	for (int i = 0; i < itemTypes; i++) {
 		drawMinX = BUFFER_WIDTH;
 		drawMaxX = 0;
-		CelClippedDrawLight(BUFFER_WIDTH / 2 - 16, 351, itemanims[i], ItemAnimLs[i], 96);
+		CelClippedDraw(BUFFER_WIDTH / 2 - 16, 351, itemanims[i], ItemAnimLs[i], 96);
 		labelCenterOffsets[i] = drawMinX - BUFFER_WIDTH / 2 + (drawMaxX - drawMinX) / 2;
 	}
 	isGeneratingLabels = false;
