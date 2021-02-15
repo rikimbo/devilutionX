@@ -1335,24 +1335,11 @@ void PM_ChangeOffset(int pnum)
 	}
 
 	plr[pnum]._pVar8++;
-	if (currlevel == 0) {
-		plr[pnum]._pVar8++;
-	}
 	px = plr[pnum]._pVar6 / 256;
 	py = plr[pnum]._pVar7 / 256;
 
-	// speedup run animation: //TODO bad place
-	if (currlevel == 0) {
-		if (plr[pnum]._pAnimFrame % 2 == 1) {
-			plr[pnum]._pAnimFrame++;
-		}
-		if (plr[pnum]._pAnimFrame >= plr[pnum]._pWFrames) {
-			plr[pnum]._pAnimFrame = 0;
-		}
-	}
-
-	plr[pnum]._pVar6 += (currlevel == 0 ? 2 : 1) * plr[pnum]._pxvel;
-	plr[pnum]._pVar7 += (currlevel == 0 ? 2 : 1) * plr[pnum]._pyvel;
+	plr[pnum]._pVar6 += plr[pnum]._pxvel;
+	plr[pnum]._pVar7 += plr[pnum]._pyvel;
 
 	if (gbIsHellfire && currlevel == 0 && jogging_opt) {
 		plr[pnum]._pVar6 += plr[pnum]._pxvel;
